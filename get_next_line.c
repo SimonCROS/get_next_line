@@ -6,7 +6,7 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:45:01 by scros             #+#    #+#             */
-/*   Updated: 2020/12/02 16:20:23 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/02 17:23:30 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		get_next_line(int fd, char **line)
 	char		*tmp_line;
 	ssize_t		result;
 
-	if (!(tmp_line = malloc(0)))
+	if (BUFFER_SIZE < 1 || !(tmp_line = malloc(0)))
 		return (-1);
 	*tmp_line = 0;
 	current = NULL;
@@ -50,9 +50,9 @@ int		get_next_line(int fd, char **line)
 				tmp = tmp_line;
 				if (!(tmp_line = ft_strjoin(tmp, current[0])))
 					return (-1);
-				free(current[0]);
 				free(tmp);
 			}
+			free(current[0]);
 		}
 	}
 	remain = current[1];
@@ -65,23 +65,26 @@ int		get_next_line(int fd, char **line)
 	return (0);
 }
 
-int		main(void)
-{
-	int		fd;
-	char	*line;
+// int		main(void)
+// {
+// 	int		fd;
+// 	char	*line;
 
-	if ((fd = open("42TESTERS-GNL/files/alphabet", O_RDONLY)) == -1)
-		return (0);
+// 	if ((fd = open("line.o", O_RDONLY)) == -1)
+// 		return (0);
 
-	int r;
-	while ((r = get_next_line(fd, &line)) > 0)
-	{
-		printf("%s\n", line);
-		free(line);
-	}
-	printf("%s\n", line);
-	free(line);
+// 	int r;
+// 	while ((r = get_next_line(fd, &line)) > 0)
+// 	{
+// 		printf("%s\n", line);
+// 		free(line);
+// 	}
+// 	printf("%s\n", line);
+// 	free(line);
 
-	close(fd);
-	return (0);
-}
+// 	close(fd);
+// 	while (1)
+// 	{
+// 	}
+// 	return (0);
+// }
