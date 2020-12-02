@@ -6,11 +6,30 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:44:58 by scros             #+#    #+#             */
-/*   Updated: 2020/12/01 11:28:40 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/02 11:37:34 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char    *ft_strdup(const char *s1)
+{
+	char	*pointer;
+	size_t	size;
+	int		i;
+
+	size = ft_strlen(s1) + 1;
+	if (!(pointer = malloc(size)))
+			return (NULL);
+	i = 0;
+	while (s1[i])
+	{
+		pointer[i] = s1[i];
+		i++;
+	}
+	pointer[i] = 0;
+	return (pointer);
+}
 
 char	*ft_strchr(const char *s, int c)
 {
@@ -33,6 +52,16 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
+size_t	ft_strlen(const char *s)
+{
+	size_t i;
+
+	i = -1;
+	while (s[++i])
+		;
+	return (i);
+}
+
 char	*ft_strjoin(const char *s1, const char *s2)
 {
 	char	*str;
@@ -51,7 +80,7 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	return (str);
 }
 
-char	**ft_split_first(const char *s, char c)
+char	**ft_split_first(char *s, char c)
 {
 	char	**parts;
 	size_t	len;
@@ -61,13 +90,14 @@ char	**ft_split_first(const char *s, char c)
 	len = 0;
 	parts[1] = ft_strchr(s, c);
 	if (!parts[1])
-	{
-		parts[1] = ft_strchr(s, 0);
-		len = 1;
-	}
-	len += parts[1] - s - 1;
+		len = -1;
+	else
+		len += parts[1] - s - 1;
 	if (!(parts[0] = ft_substr(s, 0, len)))
 		return (NULL);
+	if (parts[1])
+		parts[1] = ft_strdup(parts[1]);
+	free(s);
 	return (parts);
 }
 
@@ -97,7 +127,7 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 
 	if (!s)
 		return (NULL);
-	size = ft_strlen(s);
+	size = ft_strlen(s) - start;
 	if (len < size)
 		size = len;
 	if (start >= ft_strlen(s))
