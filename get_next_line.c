@@ -6,7 +6,7 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:45:01 by scros             #+#    #+#             */
-/*   Updated: 2020/12/02 11:40:10 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/02 16:20:23 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,90 +17,71 @@ int		get_next_line(int fd, char **line)
 	static char	*remain;
 	char		*tmp;
 	char		**current;
+	char		*tmp_line;
 	ssize_t		result;
 
-	if (!(*line = malloc(0)))
+	if (!(tmp_line = malloc(0)))
 		return (-1);
-	**line = 0;
+	*tmp_line = 0;
+	current = NULL;
 	if (remain)
 	{
 		current = ft_split_first(remain, '\n');
-		free(*line);
-		*line = current[0];
+		free(tmp_line);
+		tmp_line = current[0];
 	}
-	result = 1;
-	while (result > 0 && (!current || !current[1]))
+	result = BUFFER_SIZE;
+	while (result == BUFFER_SIZE && (!current || !current[1]))
 	{
 		if (!(remain = malloc(BUFFER_SIZE + 1)))
 			return (-1);
 		result = read(fd, remain, BUFFER_SIZE);
-		remain[BUFFER_SIZE] = 0;
+		if (result < 0)
+			return (-1);
 		if (current)
 			free(current);
-		current = ft_split_first(remain, '\n');
-		tmp = *line;
-		*line = ft_strjoin(tmp, current[0]);
-		free(current[0]);
-		free(tmp);
+		if (result >= 0)
+		{
+			remain[result] = 0;
+			if (!(current = ft_split_first(remain, '\n')))
+				return (-1);
+			if (result > 0)
+			{
+				tmp = tmp_line;
+				if (!(tmp_line = ft_strjoin(tmp, current[0])))
+					return (-1);
+				free(current[0]);
+				free(tmp);
+			}
+		}
 	}
 	remain = current[1];
 	free(current);
+	*line = tmp_line;
+	if (result == BUFFER_SIZE || (result && remain))
+		return (1);
+	free(remain);
+	remain = NULL;
 	return (0);
-}
-
-// TESTS TESTS TESTS
-
-#include <time.h>
-#include <errno.h>
-
-int msleep(long msec)
-{
-    struct timespec ts;
-    int res;
-
-    if (msec < 0)
-    {
-        errno = EINVAL;
-        return -1;
-    }
-
-    ts.tv_sec = msec / 1000;
-    ts.tv_nsec = (msec % 1000) * 1000000;
-
-    do {
-        res = nanosleep(&ts, &ts);
-    } while (res && errno == EINTR);
-
-    return res;
 }
 
 int		main(void)
 {
 	int		fd;
 	char	*line;
-	int		r;
 
-	if ((fd = open("get_next_line.h", O_RDONLY)) == -1)
+	if ((fd = open("42TESTERS-GNL/files/alphabet", O_RDONLY)) == -1)
 		return (0);
 
-	r = 30;
-	while (r--)
+	int r;
+	while ((r = get_next_line(fd, &line)) > 0)
 	{
-		get_next_line(fd, &line);
 		printf("%s\n", line);
-		msleep(50);
 		free(line);
 	}
+	printf("%s\n", line);
+	free(line);
 
-	// while ((r = get_next_line(fd, &line));
-	// {
-	// 	printf("%s\n", line);
-	// 	if (r == -1)
-	// 		break ;
-	// }
 	close(fd);
-	while (1)
-	{
-	}
 	return (0);
 }
