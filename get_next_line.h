@@ -6,7 +6,7 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:45:04 by scros             #+#    #+#             */
-/*   Updated: 2020/12/02 17:45:52 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/03 11:20:36 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 typedef struct		s_list
 {
 	void			*content;
+	int				fd;
 	struct s_list	*next;
 }					t_list;
 

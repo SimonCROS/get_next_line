@@ -6,51 +6,11 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:44:58 by scros             #+#    #+#             */
-/*   Updated: 2020/12/02 17:23:02 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/03 13:59:48 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-char    *ft_strdup(const char *s1)
-{
-	char	*pointer;
-	size_t	size;
-	int		i;
-
-	size = ft_strlen(s1) + 1;
-	if (!(pointer = malloc(size)))
-			return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		pointer[i] = s1[i];
-		i++;
-	}
-	pointer[i] = 0;
-	return (pointer);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	char *cp;
-
-	cp = (char*)s;
-	while (1)
-	{
-		if (*cp == c)
-		{
-			if (c != 0)
-				return (cp + 1);
-			else
-				return (cp);
-		}
-		if (!*cp)
-			break ;
-		++cp;
-	}
-	return (NULL);
-}
 
 size_t	ft_strlen(const char *s)
 {
@@ -95,8 +55,8 @@ char	**ft_split_first(char *s, char c)
 		len += parts[1] - s - 1;
 	if (!(parts[0] = ft_substr(s, 0, len)))
 		return (NULL);
-	if (parts[1])
-		parts[1] = ft_strdup(parts[1]);
+	if (parts[1] && !(parts[1] = ft_substr(parts[1], 0, -1)))
+		return (NULL);
 	free(s);
 	return (parts);
 }
