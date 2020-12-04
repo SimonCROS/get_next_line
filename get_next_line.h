@@ -6,14 +6,13 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:45:04 by scros             #+#    #+#             */
-/*   Updated: 2020/12/03 17:18:56 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/03 17:48:30 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# include <fcntl.h>
 # include <unistd.h>
 # include <stdlib.h>
 

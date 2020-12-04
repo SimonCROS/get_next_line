@@ -6,7 +6,7 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:44:58 by scros             #+#    #+#             */
-/*   Updated: 2020/12/03 17:18:45 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/04 14:37:24 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ char	**ft_split_first(char *s, char c)
 	parts[1] = NULL;
 	while (s[i] && s[i++] != c)
 		;
+	if (i == 0)
+		i++;
 	if (s[i - 1] == c)
 		parts[1] = s + i;
 	if (!parts[1])

@@ -6,7 +6,7 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:45:01 by scros             #+#    #+#             */
-/*   Updated: 2020/12/03 17:19:22 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/04 14:38:37 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,7 @@ t_list	*get_or_create_remain(t_list **remain, int fd)
 	}
 	if (!(new_element = malloc(sizeof(*new_element))))
 		return (NULL);
-	if (!(new_element->content = malloc(0)))
-		return (NULL);
-	new_element->content = 0;
+	new_element->content = NULL;
 	new_element->fd = fd;
 	new_element->next = *remain;
 	*remain = new_element;
