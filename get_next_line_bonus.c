@@ -6,33 +6,36 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:45:01 by scros             #+#    #+#             */
-/*   Updated: 2020/12/04 14:39:24 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/04 16:59:55 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-int		delete(t_list **remain, t_list *element, int ret)
+int		delete(int ret, t_list **remain, t_list *element, void *p)
 {
 	t_list *elem;
 
-	if (element == *remain)
-		*remain = element->next;
-	else
+	if (remain && *remain && element)
 	{
-		elem = *remain;
-		while (elem)
-		{
-			if (elem->next == element)
+		if (element == *remain)
+			*remain = element->next;
+		else if ((elem = *remain))
+			while (elem)
 			{
-				elem->next = element->next;
-				break ;
+				if (elem->next == element)
+				{
+					elem->next = element->next;
+					break ;
+				}
+				elem = elem->next;
 			}
-			elem = elem->next;
-		}
+		if (element->content)
+			free(element->content);
+		free(element);
 	}
-	free(element->content);
-	free(element);
+	if (p)
+		free(p);
 	return (ret);
 }
 
@@ -110,18 +113,18 @@ int		get_next_line(int fd, char **line)
 		return (-1);
 	*tmp_line = 0;
 	if (!(remain = get_or_create_remain(&remain_lst, fd)))
-		return (-1);
+		return (delete(-1, NULL, NULL, tmp_line));
 	current = NULL;
 	if (load_remain(remain, &tmp_line, &current) == -1)
-		return (-1);
+		return (delete(-1, &remain_lst, remain, tmp_line));
 	result = BUFFER_SIZE;
 	while (result == BUFFER_SIZE && (!current || !current[1]))
 		if ((result = read_line(fd, &tmp_line, &current, remain)) == -1)
-			return (-1);
+			return (delete(-1, &remain_lst, remain, tmp_line));
 	remain->content = current[1];
 	free(current);
 	*line = tmp_line;
 	if (result == BUFFER_SIZE || (result && remain->content))
 		return (1);
-	return (delete(&remain_lst, remain, 0));
+	return (delete(0, &remain_lst, remain, NULL));
 }
