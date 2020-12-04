@@ -6,7 +6,7 @@
 /*   By: scros <scros@student.42lyon.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/26 13:45:01 by scros             #+#    #+#             */
-/*   Updated: 2020/12/04 16:45:56 by scros            ###   ########lyon.fr   */
+/*   Updated: 2020/12/04 16:56:47 by scros            ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,11 @@ int		delete(int ret, t_list **remain, t_list *element, void *p)
 {
 	t_list *elem;
 
-	if (remain && element)
+	if (remain && *remain && element)
 	{
 		if (element == *remain)
 			*remain = element->next;
-		else
-		{
-			elem = *remain;
+		else if ((elem = *remain))
 			while (elem)
 			{
 				if (elem->next == element)
@@ -32,7 +30,6 @@ int		delete(int ret, t_list **remain, t_list *element, void *p)
 				}
 				elem = elem->next;
 			}
-		}
 		if (element->content)
 			free(element->content);
 		free(element);
