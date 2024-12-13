@@ -44,36 +44,42 @@ static int	read_until_nl(int fd, t_buffer *buffer, char **eol_pos)
 	return (read_count);
 }
 
+static char	*get_line(t_buffer *buffer, char *eol_pos)
+{
+	size_t	line_length;
+	char	*line;
+
+	line_length = 0;
+	if (eol_pos != NULL)
+		line_length = eol_pos - buffer->data + 1; // +1 for \n
+	else if (buffer->length > 0)
+		line_length = buffer->length;
+	line = ft_strndup(buffer->data, line_length);
+	if (!line)
+		return (NULL);
+	buffer->length -= line_length;
+	ft_memmove(buffer->data, buffer->data + line_length, buffer->length);
+	return (line);
+}
+
 char	*get_next_line(int fd)
 {
 	static t_buffer	buffer;
 	ssize_t			read_count;
 	char			*eol_pos;
 	char			*line;
-	size_t			line_length;
 
 	line = NULL;
-	line_length = 0;
 	read_count = read_until_nl(fd, &buffer, &eol_pos);
 	if (read_count != -1 && buffer.length > 0)
-	{
-		if (eol_pos != NULL)
-			line_length = eol_pos - buffer.data + 1; // +1 for \n
-		else if (buffer.length > 0)
-			line_length = buffer.length;
-		line = ft_strndup(buffer.data, line_length);
-		if (!line)
-			read_count = -1;
-		buffer.length -= line_length;
-		ft_memmove(buffer.data, buffer.data + line_length, buffer.length);
-	}
-	if (read_count <= 0)
+		line = get_line(&buffer, eol_pos);
+	if (read_count <= 0 || line == NULL)
 	{
 		free(buffer.data);
 		buffer.data = NULL;
 		buffer.length = 0;
 		buffer.capacity = 0;
-		if (read_count == -1)
+		if (read_count == -1 || line == NULL)
 		{
 			free(line);
 			line = NULL;
