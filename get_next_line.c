@@ -4,21 +4,22 @@
 
 #include "get_next_line.h"
 
-static bool reserve(t_buffer *buffer, size_t size)
+static bool	reserve(t_buffer *buffer, size_t size)
 {
-	char *reallocated;
+	char	*reallocated;
 
-	if (buffer->capacity - buffer->length < size) {
+	if (buffer->capacity - buffer->length < size)
+	{
 		reallocated = malloc(buffer->length + size);
 		if (reallocated == NULL)
-			return false;
+			return (false);
 		if (buffer->data)
 			ft_memmove(reallocated, buffer->data, buffer->capacity);
 		free(buffer->data);
 		buffer->data = reallocated;
 		buffer->capacity = buffer->length + size;
 	}
-	return true;
+	return (true);
 }
 
 char *get_next_line(int fd)
