@@ -22,29 +22,41 @@ static bool	reserve(t_buffer *buffer, size_t size)
 	return (true);
 }
 
-char *get_next_line(int fd)
+static int	read_until_nl(int fd, t_buffer *buffer, char **eol_pos)
+{
+	ssize_t			read_count;
+
+	read_count = BUFFER_SIZE;
+	*eol_pos = ft_memchr(buffer->data, '\n', buffer->length);
+	while (*eol_pos == NULL && read_count == BUFFER_SIZE)
+	{
+		if (!reserve(buffer, BUFFER_SIZE))
+		{
+			read_count = -1;
+			break ;
+		}
+		read_count = read(fd, buffer->data + buffer->length, BUFFER_SIZE);
+		if (read_count == -1)
+			break ;
+		buffer->length += read_count;
+		*eol_pos = ft_memchr(buffer->data, '\n', buffer->length);
+	}
+	return (read_count);
+}
+
+char	*get_next_line(int fd)
 {
 	static t_buffer	buffer;
 	ssize_t			read_count;
-	char			*line;
 	char			*eol_pos;
+	char			*line;
 	size_t			line_length;
 
-	read_count = BUFFER_SIZE;
 	line = NULL;
-	eol_pos = NULL;
 	line_length = 0;
-	while ((eol_pos = ft_memchr(buffer.data, '\n', buffer.length)) == NULL && read_count == BUFFER_SIZE) {
-		if (!reserve(&buffer, BUFFER_SIZE)) {
-			read_count = -1;
-			break;
-		}
-		read_count = read(fd, buffer.data + buffer.length, BUFFER_SIZE);
-		if (read_count == -1)
-			break;
-		buffer.length += read_count;
-	}
-	if (read_count != -1 && buffer.length > 0) {
+	read_count = read_until_nl(fd, &buffer, &eol_pos);
+	if (read_count != -1 && buffer.length > 0)
+	{
 		if (eol_pos != NULL)
 			line_length = eol_pos - buffer.data + 1; // +1 for \n
 		else if (buffer.length > 0)
@@ -55,16 +67,18 @@ char *get_next_line(int fd)
 		buffer.length -= line_length;
 		ft_memmove(buffer.data, buffer.data + line_length, buffer.length);
 	}
-	if (read_count <= 0) {
+	if (read_count <= 0)
+	{
 		free(buffer.data);
 		buffer.data = NULL;
 		buffer.length = 0;
 		buffer.capacity = 0;
-		if (read_count == -1) {
+		if (read_count == -1)
+		{
 			free(line);
 			line = NULL;
-			return NULL;
+			return (NULL);
 		}
 	}
-	return line;
+	return (line);
 }
