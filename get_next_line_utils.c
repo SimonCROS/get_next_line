@@ -5,17 +5,19 @@
 
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	size_t			i;
+	size_t	i;
 
 	i = 0;
 	// Copy 8 (on x64 architectures) by 8 bytes
-	while (i + sizeof(ptrdiff_t) < n) {
-		*(ptrdiff_t*)(dst + i) = *(ptrdiff_t*)(src + i);
+	while (i + sizeof(ptrdiff_t) < n)
+	{
+		*(ptrdiff_t *)(dst + i) = *(ptrdiff_t *)(src + i);
 		i += sizeof(ptrdiff_t);
 	}
 	// Then copy the remaining bytes
-	while (i < n) {
-		*(unsigned char*)(dst + i) = *(unsigned char*)(src + i);
+	while (i < n)
+	{
+		*(unsigned char *)(dst + i) = *(unsigned char *)(src + i);
 		++i;
 	}
 	return (dst);
@@ -28,14 +30,16 @@ void	*ft_memmove(void *dst, const void *src, size_t len)
 	else
 	{
 		// Copy 8 (on x64 architectures) by 8 bytes
-		while (len >= sizeof(ptrdiff_t)) {
+		while (len >= sizeof(ptrdiff_t))
+		{
 			len -= sizeof(ptrdiff_t);
-			*(ptrdiff_t*)(dst + len) = *(ptrdiff_t*)(src + len);
+			*(ptrdiff_t *)(dst + len) = *(ptrdiff_t *)(src + len);
 		}
 		// Then copy the remaining bytes
-		while (len > 0) {
+		while (len > 0)
+		{
 			--len;
-			*(unsigned char*)(dst + len) = *(unsigned char*)(src + len);
+			*(unsigned char *)(dst + len) = *(unsigned char *)(src + len);
 		}
 	}
 	return (dst);
@@ -62,8 +66,8 @@ char	*ft_strndup(char *ptr, size_t n)
 
 	line = malloc(n + 1);
 	if (!line)
-		return NULL;
+		return (NULL);
 	ft_memcpy(line, ptr, n);
 	line[n] = '\0';
-	return line;
+	return (line);
 }
