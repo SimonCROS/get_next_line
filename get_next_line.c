@@ -34,20 +34,19 @@ static int	read_until_nl(int fd, t_buffer *buffer, char **eol_pos)
 
 	eol_start = 0;
 	read_count = BUFFER_SIZE;
-	*eol_pos = ft_memchr(buffer->data + eol_start, '\n', buffer->length - eol_start);
-	while (*eol_pos == NULL && read_count == BUFFER_SIZE)
+	while (true)
 	{
+		*eol_pos = ft_memchr(buffer->data + eol_start, '\n',
+				buffer->length - eol_start);
+		if (*eol_pos != NULL || read_count != BUFFER_SIZE)
+			break ;
 		eol_start = buffer->length;
 		if (!reserve(buffer, BUFFER_SIZE))
-		{
-			read_count = -1;
-			break ;
-		}
+			return (-1);
 		read_count = read(fd, buffer->data + buffer->length, BUFFER_SIZE);
 		if (read_count == -1)
 			break ;
 		buffer->length += read_count;
-		*eol_pos = ft_memchr(buffer->data + eol_start, '\n', buffer->length - eol_start);
 	}
 	return (read_count);
 }
