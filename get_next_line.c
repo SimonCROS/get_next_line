@@ -6,30 +6,38 @@
 
 static bool	reserve(t_buffer *buffer, size_t size)
 {
+	size_t	new_capacity;
 	char	*reallocated;
 
 	if (buffer->capacity - buffer->length < size)
 	{
-		reallocated = malloc(buffer->length + size);
+		if (buffer->capacity * 2 - buffer->length < size)
+			new_capacity = buffer->length + size;
+		else
+			new_capacity = buffer->capacity * 2;
+		reallocated = malloc(new_capacity);
 		if (reallocated == NULL)
 			return (false);
 		if (buffer->data)
-			ft_memmove(reallocated, buffer->data, buffer->capacity);
+			ft_memmove(reallocated, buffer->data, buffer->length);
 		free(buffer->data);
 		buffer->data = reallocated;
-		buffer->capacity = buffer->length + size;
+		buffer->capacity = new_capacity;
 	}
 	return (true);
 }
 
 static int	read_until_nl(int fd, t_buffer *buffer, char **eol_pos)
 {
-	ssize_t			read_count;
+	size_t	eol_start;
+	ssize_t	read_count;
 
+	eol_start = 0;
 	read_count = BUFFER_SIZE;
-	*eol_pos = ft_memchr(buffer->data, '\n', buffer->length);
+	*eol_pos = ft_memchr(buffer->data + eol_start, '\n', buffer->length - eol_start);
 	while (*eol_pos == NULL && read_count == BUFFER_SIZE)
 	{
+		eol_start = buffer->length;
 		if (!reserve(buffer, BUFFER_SIZE))
 		{
 			read_count = -1;
@@ -39,7 +47,7 @@ static int	read_until_nl(int fd, t_buffer *buffer, char **eol_pos)
 		if (read_count == -1)
 			break ;
 		buffer->length += read_count;
-		*eol_pos = ft_memchr(buffer->data, '\n', buffer->length);
+		*eol_pos = ft_memchr(buffer->data + eol_start, '\n', buffer->length - eol_start);
 	}
 	return (read_count);
 }
